@@ -6,8 +6,8 @@ function Header() {
     return (
         <header>
             <nav className="navbar navbar-expand-sm fixed-top navbar-light bg-light">
-                <Link className="navbar-brand" to="/">
-                    Chatty
+                <Link className="navbar-brand" to="/dlrgfunk/">
+                    DLRG Funk
                 </Link>
                 <button
                     className="navbar-toggler"
@@ -26,29 +26,32 @@ function Header() {
                 >
                     {auth().currentUser ? (
                         <div className="navbar-nav">
-                            <Link className="nav-item nav-link mr-3" to="/chat">
-                                Profile
+                            <Link
+                                className="nav-item nav-link mr-3 training"
+                                to="/dlrgfunk/chat"
+                            >
+                                Übung
                             </Link>
                             <button
                                 className="btn btn-primary mr-3"
                                 onClick={() => auth().signOut()}
                             >
-                                Logout
+                                Ausloggen
                             </button>
                         </div>
                     ) : (
                         <div className="navbar-nav">
                             <Link
                                 className="nav-item nav-link mr-3"
-                                to="/login"
+                                to="/dlrgfunk/login"
                             >
-                                Sign In
+                                Einloggen
                             </Link>
                             <Link
                                 className="nav-item nav-link mr-3"
-                                to="/signup"
+                                to="/dlrgfunk/signup"
                             >
-                                Sign Up
+                                Registrieren
                             </Link>
                         </div>
                     )}

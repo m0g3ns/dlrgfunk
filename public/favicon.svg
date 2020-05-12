@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: #000;
+      }
+      .cls-2 {
+        fill: #FFF;
+      }
+      
+    </style>
+  </defs>
+  <rect class="cls-2" width="64" height="64"/>
+  <rect class="cls-1" width="32" height="32"/>
+  <rect class="cls-1" x="32" y="32" width="32" height="32"/>
+  <rect class="left" width="1" height="64" />
+  <rect class="bottom" x="0" y="63" width="64" height="1" />
+  <rect class="right" x="63" y="0" width="1" height="64" />
+  <rect class="top" width="64" height="1" />
+</svg>

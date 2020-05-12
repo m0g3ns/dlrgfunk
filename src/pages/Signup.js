@@ -54,13 +54,13 @@ export default class SignUp extends Component {
             <div className="container">
                 <form className="mt-5 py-5 px-5" onSubmit={this.handleSubmit}>
                     <h1>
-                        Sign Up to
-                        <Link className="title ml-2" to="/">
-                            Chatty
+                        Registrieren im
+                        <Link className="title ml-2" to="/dlrgfunk/">
+                            DLRG Online Funk
                         </Link>
                     </h1>
                     <p className="lead">
-                        Fill in the form below to create an account.
+                        Füll die Felder unten aus um dich zu registrieren.
                     </p>
                     <div className="form-group">
                         <input
@@ -87,27 +87,30 @@ export default class SignUp extends Component {
                             <p className="text-danger">{this.state.error}</p>
                         ) : null}
                         <button className="btn btn-primary px-5" type="submit">
-                            Sign up
+                            Registrieren
                         </button>
                     </div>
-                    <p>You can also sign up with any of these services</p>
+                    <p>
+                        Du kannst dich auch mit folgenden Anbietern registrieren
+                    </p>
                     <button
                         className="btn btn-danger mr-2"
                         type="button"
                         onClick={this.googleSignIn}
                     >
-                        Sign up with Google
+                        Registrieren mit Google
                     </button>
                     <button
                         className="btn btn-secondary"
                         type="button"
                         onClick={this.githubSignIn}
                     >
-                        Sign up with GitHub
+                        Registrieren mit GitHub
                     </button>
                     <hr></hr>
                     <p>
-                        Already have an account? <Link to="/login">Login</Link>
+                        Du hast dich schon registriert?{" "}
+                        <Link to="/dlrgfunk/login">Login</Link>
                     </p>
                 </form>
             </div>

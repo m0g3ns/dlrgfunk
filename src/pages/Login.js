@@ -57,13 +57,13 @@ export default class Login extends Component {
                     onSubmit={this.handleSubmit}
                 >
                     <h1>
-                        Login to
-                        <Link className="title ml-2" to="/">
-                            Chatty
+                        Anmelden im
+                        <Link className="title ml-2" to="/dlrgfunk/">
+                            DLRG Online Funk
                         </Link>
                     </h1>
                     <p className="lead">
-                        Fill in the form below to login to your account.
+                        Fülle die Felder unten aus um dich einzuloggen.
                     </p>
                     <div className="form-group">
                         <input
@@ -78,7 +78,7 @@ export default class Login extends Component {
                     <div className="form-group">
                         <input
                             className="form-control"
-                            placeholder="Password"
+                            placeholder="Passwort"
                             name="password"
                             onChange={this.handleChange}
                             value={this.state.password}
@@ -90,27 +90,28 @@ export default class Login extends Component {
                             <p className="text-danger">{this.state.error}</p>
                         ) : null}
                         <button className="btn btn-primary px-5" type="submit">
-                            Login
+                            Anmelden
                         </button>
                     </div>
-                    <p>You can also log in with any of these services</p>
+                    <p>Du kannst dich auch mit folgenden Anbietern anmelden</p>
                     <button
                         className="btn btn-danger mr-2"
                         type="button"
                         onClick={this.googleSignIn}
                     >
-                        Sign in with Google
+                        Anmelden mit Google
                     </button>
                     <button
                         className="btn btn-secondary"
                         type="button"
                         onClick={this.githubSignIn}
                     >
-                        Sign in with GitHub
+                        Anmelden mit GitHub
                     </button>
                     <hr />
                     <p>
-                        Don't have an account? <Link to="/signup">Sign up</Link>
+                        Noch keinen Account?{" "}
+                        <Link to="/dlrgfunk/signup">Registrieren</Link>
                     </p>
                 </form>
             </div>

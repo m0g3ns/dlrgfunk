@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Chat from "./pages/Chat";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import NotFound from "./pages/NotFound";
 import { auth } from "./services/firebase";
 import "./styles.css";
 
@@ -22,7 +23,7 @@ function PrivateRoute({ component: Component, authenticated, ...rest }) {
                 ) : (
                     <Redirect
                         to={{
-                            pathname: "/login",
+                            pathname: "/dlrgfunk/login",
                             state: { from: props.location },
                         }}
                     />
@@ -40,7 +41,7 @@ function PublicRoute({ component: Component, authenticated, ...rest }) {
                 authenticated === false ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to="/chat" />
+                    <Redirect to="/dlrgfunk/chat" />
                 )
             }
         />
@@ -80,22 +81,32 @@ class App extends Component {
         ) : (
             <Router>
                 <Switch>
-                    <Route exact path="/" component={Home} />
+                    <Route
+                        exact
+                        path="/dlrgfunk/"
+                        render={(props) => (
+                            <Home
+                                {...props}
+                                authenticated={this.state.authenticated}
+                            />
+                        )}
+                    />
                     <PrivateRoute
-                        path="/chat"
+                        path="/dlrgfunk/chat"
                         authenticated={this.state.authenticated}
                         component={Chat}
                     />
                     <PublicRoute
-                        path="/signup"
+                        path="/dlrgfunk/signup"
                         authenticated={this.state.authenticated}
                         component={Signup}
                     />
                     <PublicRoute
-                        path="/login"
+                        path="/dlrgfunk/login"
                         authenticated={this.state.authenticated}
                         component={Login}
                     />
+                    <Route component={NotFound} />
                 </Switch>
             </Router>
         );

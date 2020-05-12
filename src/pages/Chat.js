@@ -65,9 +65,9 @@ export default class Chat extends Component {
 
     formatTime(timestamp) {
         const d = new Date(timestamp);
-        const time = `${d.getDate()}/${
+        const time = `${d.getDate()}.${
             d.getMonth() + 1
-        }/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
+        }.${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
         return time;
     }
 
@@ -120,11 +120,11 @@ export default class Chat extends Component {
                         <p className="text-danger">{this.state.error}</p>
                     ) : null}
                     <button type="submit" className="btn btn-submit px-5 mt-4">
-                        Send
+                        Absenden
                     </button>
                 </form>
                 <div className="py-5 mx-3">
-                    Login in as:{" "}
+                    Eingeloggt als:{" "}
                     <strong className="text-info">
                         {this.state.user.email}
                     </strong>
