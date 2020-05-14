@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Header from "../components/Header";
 import { auth, db, firestore } from "../services/firebase";
 import { Redirect } from "react-router-dom";
+import { randomTerm } from "../helpers/calc";
 
 export default class Chat extends Component {
     constructor(props) {
@@ -19,6 +20,7 @@ export default class Chat extends Component {
             selectedValues: [],
         };
         this.change = this.change.bind(this);
+        this.handleCalc = this.handleCalc.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.myRef = React.createRef();
@@ -101,10 +103,11 @@ export default class Chat extends Component {
         this.setState({
             content: event.target.value,
         });
+        console.log(event);
     }
 
     async handleSubmit(event) {
-        event.preventDefault();
+        if (event !== undefined) event.preventDefault();
         this.setState({ writeError: null });
 
         const chatArea = this.myRef.current || null;
@@ -124,6 +127,15 @@ export default class Chat extends Component {
         } catch (error) {
             this.setState({ writeError: error.message });
         }
+    }
+
+    async handleCalc() {
+        const content =
+            "Löse folgende Rechenaufgabe und melde sowohl Aufgabe als auch Ergebnis an den Adler " +
+            this.state.station.data.Ort +
+            ": " +
+            randomTerm();
+        this.setState({ content: content });
     }
 
     redirect = () => {
@@ -199,30 +211,32 @@ export default class Chat extends Component {
                     </div>
                 ) : (
                     <form onSubmit={this.handleSubmit} className="mx-3">
-                        {this.state.station.data.Bezeichnung === "" ? (
-                            <div className="form-group">
-                                <select
-                                    multiple
-                                    className="form-control"
-                                    onChange={this.change}
-                                >
-                                    {this.state.otherStations.map((station) => {
-                                        return (
-                                            <option
-                                                key={
-                                                    station.Ort +
-                                                    station.Bezeichnung
-                                                }
-                                            >
-                                                {station.Bezeichnung}
-                                            </option>
-                                        );
-                                    })}
-                                </select>
-                            </div>
-                        ) : (
-                            ""
-                        )}
+                        <div className="form-group">
+                            <select
+                                multiple
+                                className="form-control"
+                                onChange={this.change}
+                            >
+                                {this.state.otherStations.map((station) => {
+                                    return (
+                                        <option
+                                            key={
+                                                station.Ort +
+                                                station.Bezeichnung
+                                            }
+                                        >
+                                            {station.Bezeichnung}
+                                        </option>
+                                    );
+                                })}
+                            </select>
+                        </div>
+                        <button
+                            className="btn btn-warning px-5 mb-4"
+                            onClick={this.handleCalc}
+                        >
+                            Rechenaufgabe
+                        </button>
                         <textarea
                             className="form-control"
                             name="content"
