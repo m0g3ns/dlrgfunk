@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "cc3bb2abc98e3fd99e96488380835ccc",
+    "revision": "00f3f4e2f3085c187820d93aa8ad2e68",
     "url": "/dlrgfunk/index.html"
   },
   {
-    "revision": "c25b7573a5954079ee48",
+    "revision": "6d0c37d4cc371b3d4bd6",
     "url": "/dlrgfunk/static/css/main.ece23c92.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/dlrgfunk/static/js/2.d8635886.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c25b7573a5954079ee48",
-    "url": "/dlrgfunk/static/js/main.8e616cf4.chunk.js"
+    "revision": "6d0c37d4cc371b3d4bd6",
+    "url": "/dlrgfunk/static/js/main.beeaa873.chunk.js"
   },
   {
     "revision": "53dfc1980e40deba63aa",
