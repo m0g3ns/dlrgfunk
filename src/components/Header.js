@@ -28,7 +28,7 @@ function Header() {
                         <div className="navbar-nav">
                             <Link
                                 className="nav-item nav-link mr-3 training"
-                                to="/dlrgfunk/chat"
+                                to="/dlrgfunk/join"
                             >
                                 Übung
                             </Link>
