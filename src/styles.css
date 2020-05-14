@@ -97,11 +97,26 @@ body {
     margin-top: 0px;
 }
 
+.btn-danger.delete,
+.btn-success.joinBtn {
+    width: 85px;
+}
+
 .btn-danger.delete {
-    width: 170px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
 }
 
 .btn-danger.delete img {
+    width: 24px;
+}
+
+.btn-success.joinBtn {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.btn-success.joinBtn img {
     width: 24px;
 }
 

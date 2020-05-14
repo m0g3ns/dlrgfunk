@@ -3,6 +3,7 @@ import { auth } from "../services/firebase";
 import { firestore } from "../services/firebase";
 import { Redirect } from "react-router-dom";
 import trash from "../media/trash.svg";
+import check from "../media/check.svg";
 
 export default class Funkteilnehmer extends React.Component {
     constructor(props) {
@@ -78,6 +79,11 @@ export default class Funkteilnehmer extends React.Component {
                     this.setState({ errorWrite: err });
                     e.preventDefault();
                 });
+        } else if (
+            this.state.user.uid === this.state.station.data.uid &&
+            [...e.currentTarget.classList].includes("joinBtn")
+        ) {
+            this.setState({ redirect: true });
         } else if (this.state.user.uid === this.state.station.data.uid) {
             let stationRef = firestore
                 .collection("stations")
@@ -143,7 +149,7 @@ export default class Funkteilnehmer extends React.Component {
                             ? this.state.station.data.uid !== ""
                                 ? "btn btn-primary px-5 ml-3 disabled"
                                 : "btn btn-primary px-5 ml-3"
-                            : "btn btn-danger px-5 delete"
+                            : "btn btn-danger delete"
                     }
                     onClick={this.linkClicked}
                 >
@@ -153,6 +159,16 @@ export default class Funkteilnehmer extends React.Component {
                         <img src={trash} alt="trash" />
                     )}
                 </button>
+                {this.state.station.data.uid === this.state.user.uid ? (
+                    <button
+                        className="btn btn-success joinBtn"
+                        onClick={this.linkClicked}
+                    >
+                        <img src={check} alt="check" />
+                    </button>
+                ) : (
+                    ""
+                )}
             </div>
         );
     }
