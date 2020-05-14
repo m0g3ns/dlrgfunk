@@ -37,7 +37,7 @@ export default class Home extends Component {
                                 <div className="mt-4">
                                     <Link
                                         className="btn btn-primary px-5 mr-3"
-                                        to="/dlrgfunk/chat"
+                                        to="/dlrgfunk/join"
                                     >
                                         Übung beitreten
                                     </Link>

@@ -9,7 +9,10 @@ import Home from "./pages/Home";
 import Chat from "./pages/Chat";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
+import Teacher from "./pages/Teacher";
 import NotFound from "./pages/NotFound";
+import Join from "./pages/Join";
+
 import { auth } from "./services/firebase";
 import "./styles.css";
 
@@ -90,6 +93,16 @@ class App extends Component {
                                 authenticated={this.state.authenticated}
                             />
                         )}
+                    />
+                    <PrivateRoute
+                        path="/dlrgfunk/teacher"
+                        authenticated={this.state.authenticated}
+                        component={Teacher}
+                    />
+                    <PrivateRoute
+                        path="/dlrgfunk/join"
+                        authenticated={this.state.authenticated}
+                        component={Join}
                     />
                     <PrivateRoute
                         path="/dlrgfunk/chat"

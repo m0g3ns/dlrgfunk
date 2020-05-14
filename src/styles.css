@@ -6,8 +6,10 @@ body {
 }
 
 .chat-area,
-.home {
-    margin-top: 60px;
+.home,
+.teacher,
+.join {
+    margin-top: 70px;
 }
 
 .chat-area {
@@ -36,7 +38,7 @@ body {
 }
 
 .form-control {
-    width: 60%;
+    width: 40%;
 }
 
 .form-control:focus {
@@ -56,9 +58,70 @@ body {
     margin-top: 10px;
 }
 
+.hidden {
+    display: none;
+}
+
+.join {
+    margin: 70px auto;
+    max-width: 900px;
+}
+
+.funkteilnehmer {
+    height: 60px;
+    position: relative;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.funkteilnehmer span {
+    float: left;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.funkteilnehmer .form-control {
+    float: right;
+    position: relative;
+    right: 180px;
+    margin-top: 0px;
+}
+
+.funkteilnehmer .btn {
+    float: right;
+    position: relative;
+    right: -40%;
+    margin-top: 0px;
+}
+
+.btn-danger.delete {
+    width: 170px;
+}
+
+.btn-danger.delete img {
+    width: 24px;
+}
+
 @media screen and (max-width: 767px) {
-    .form-control {
+    .funkteilnehmer {
+        margin-top: 60px;
+    }
+
+    .form-control.funk-name {
         width: 100%;
+        position: relative;
+        top: 40px;
+        right: 0px;
+    }
+
+    .funkteilnehmer .btn {
+        display: block;
+        position: relative;
+        top: 45px;
+        right: 0px;
     }
 
     .chat-area .chat-bubble {
