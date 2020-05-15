@@ -1,23 +1,23 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "8ffd68c24961ea15eefaeb6662157eb2",
+    "revision": "27709551ca36bc93064f4b9b91ca304b",
     "url": "/dlrgfunk/index.html"
   },
   {
-    "revision": "6be4cb911f40c3437628",
-    "url": "/dlrgfunk/static/css/main.dab95dc9.chunk.css"
+    "revision": "06f7ff0720cee11291c4",
+    "url": "/dlrgfunk/static/css/main.828e593e.chunk.css"
   },
   {
-    "revision": "6941229d14fbc04a6bec",
-    "url": "/dlrgfunk/static/js/2.d45f2447.chunk.js"
+    "revision": "10ac68c9a15c76a9e47f",
+    "url": "/dlrgfunk/static/js/2.33cdfce0.chunk.js"
   },
   {
     "revision": "f9b3e87900b5f3843f2b97c9b5b24d1e",
-    "url": "/dlrgfunk/static/js/2.d45f2447.chunk.js.LICENSE.txt"
+    "url": "/dlrgfunk/static/js/2.33cdfce0.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "6be4cb911f40c3437628",
-    "url": "/dlrgfunk/static/js/main.f4e68347.chunk.js"
+    "revision": "06f7ff0720cee11291c4",
+    "url": "/dlrgfunk/static/js/main.aef2b46d.chunk.js"
   },
   {
     "revision": "53dfc1980e40deba63aa",
