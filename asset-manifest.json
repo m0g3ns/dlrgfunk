@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/dlrgfunk/static/css/main.1103df97.chunk.css",
-    "main.js": "/dlrgfunk/static/js/main.780444a0.chunk.js",
-    "main.js.map": "/dlrgfunk/static/js/main.780444a0.chunk.js.map",
+    "main.css": "/dlrgfunk/static/css/main.0c632343.chunk.css",
+    "main.js": "/dlrgfunk/static/js/main.c0d42405.chunk.js",
+    "main.js.map": "/dlrgfunk/static/js/main.c0d42405.chunk.js.map",
     "runtime-main.js": "/dlrgfunk/static/js/runtime-main.20c76c9b.js",
     "runtime-main.js.map": "/dlrgfunk/static/js/runtime-main.20c76c9b.js.map",
     "static/js/2.d45f2447.chunk.js": "/dlrgfunk/static/js/2.d45f2447.chunk.js",
     "static/js/2.d45f2447.chunk.js.map": "/dlrgfunk/static/js/2.d45f2447.chunk.js.map",
     "index.html": "/dlrgfunk/index.html",
-    "precache-manifest.de28d1aad1e0b501a0a9b9f9b610f43a.js": "/dlrgfunk/precache-manifest.de28d1aad1e0b501a0a9b9f9b610f43a.js",
+    "precache-manifest.fc8029a1112d198c3b95e804bead57bc.js": "/dlrgfunk/precache-manifest.fc8029a1112d198c3b95e804bead57bc.js",
     "service-worker.js": "/dlrgfunk/service-worker.js",
-    "static/css/main.1103df97.chunk.css.map": "/dlrgfunk/static/css/main.1103df97.chunk.css.map",
+    "static/css/main.0c632343.chunk.css.map": "/dlrgfunk/static/css/main.0c632343.chunk.css.map",
     "static/js/2.d45f2447.chunk.js.LICENSE.txt": "/dlrgfunk/static/js/2.d45f2447.chunk.js.LICENSE.txt",
     "static/media/check.svg": "/dlrgfunk/static/media/check.3a7e9691.svg",
     "static/media/trash.svg": "/dlrgfunk/static/media/trash.ea3322d7.svg"
@@ -18,7 +18,7 @@
   "entrypoints": [
     "static/js/runtime-main.20c76c9b.js",
     "static/js/2.d45f2447.chunk.js",
-    "static/css/main.1103df97.chunk.css",
-    "static/js/main.780444a0.chunk.js"
+    "static/css/main.0c632343.chunk.css",
+    "static/js/main.c0d42405.chunk.js"
   ]
 }
