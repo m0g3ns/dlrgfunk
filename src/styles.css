@@ -14,8 +14,6 @@ body {
 
 .chat-area {
     padding: 20px;
-    height: 400px;
-    overflow-y: scroll;
 }
 
 .chat-area .chat-bubble {
@@ -38,7 +36,7 @@ body {
 }
 
 .form-control {
-    width: 100%;
+    width: 40%;
 }
 
 .form-control:focus {
@@ -136,6 +134,10 @@ body {
 
 .content .form-group {
     max-width: 200px;
+}
+
+.content .form-control {
+    width: 100%;
 }
 
 .content form {

@@ -21,6 +21,7 @@ export default class Chat extends Component {
         };
         this.change = this.change.bind(this);
         this.handleCalc = this.handleCalc.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.myRef = React.createRef();
@@ -103,7 +104,6 @@ export default class Chat extends Component {
         this.setState({
             content: event.target.value,
         });
-        console.log(event);
     }
 
     async handleSubmit(event) {
@@ -129,13 +129,19 @@ export default class Chat extends Component {
         }
     }
 
-    async handleCalc() {
+    handleCalc() {
         const content =
             "Löse folgende Rechenaufgabe und melde sowohl Aufgabe als auch Ergebnis an den Adler " +
             this.state.station.data.Ort +
             ": " +
             randomTerm();
         this.setState({ content: content });
+    }
+
+    async handleDelete() {
+        this.state.selectedValues.forEach(async (val) => {
+            await db.ref("chats/" + val).set(null);
+        });
     }
 
     redirect = () => {
@@ -150,9 +156,11 @@ export default class Chat extends Component {
 
     formatTime(timestamp) {
         const d = new Date(timestamp);
+        let minutes = d.getMinutes();
+        if (minutes < 10) minutes = "0" + minutes;
         const time = `${d.getDate()}.${
             d.getMonth() + 1
-        }.${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
+        }.${d.getFullYear()} ${d.getHours()}:${minutes}`;
         return time;
     }
 
@@ -194,6 +202,8 @@ export default class Chat extends Component {
                                     ""
                                 )}
                                 {this.state.chats.slice(-2).map((chat) => {
+                                    //Last 2 messages
+                                    if (chat.content === "") return "";
                                     return (
                                         <p
                                             key={chat.timestamp}
@@ -241,10 +251,16 @@ export default class Chat extends Component {
                                     </select>
                                 </div>
                                 <button
-                                    className="btn btn-warning px-5 mb-4"
+                                    className="btn btn-warning px-5 mb-2"
                                     onClick={this.handleCalc}
                                 >
                                     Rechenaufgabe
+                                </button>
+                                <button
+                                    className="btn btn-danger px-5 mb-2"
+                                    onClick={this.handleDelete}
+                                >
+                                    Chat löschen
                                 </button>
                                 <textarea
                                     className="form-control"
