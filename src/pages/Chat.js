@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Header from "../components/Header";
 import { auth, db, firestore } from "../services/firebase";
 import { Redirect } from "react-router-dom";
-import { randomTerm } from "../helpers/calc";
+import { randomTerm, randomClothing, age } from "../helpers/calc";
 
 export default class Chat extends Component {
     constructor(props) {
@@ -18,9 +18,12 @@ export default class Chat extends Component {
             redirect: false,
             otherStations: [],
             selectedValues: [],
+            persons: [],
         };
         this.change = this.change.bind(this);
         this.handleCalc = this.handleCalc.bind(this);
+        this.handlePerson = this.handlePerson.bind(this);
+        this.handleAlarm = this.handleAlarm.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -70,6 +73,16 @@ export default class Chat extends Component {
                     });
                     this.setState({ otherStations: stations });
                 });
+            await firestore
+                .collection("persons")
+                .get()
+                .then((snaps) => {
+                    const persons = [];
+                    snaps.forEach((snap) => {
+                        persons.push(snap.data());
+                    });
+                    this.setState({ persons });
+                });
         }
         const chatArea = this.myRef.current;
         if (this.state.station.data.Bezeichnung !== "") {
@@ -108,17 +121,20 @@ export default class Chat extends Component {
 
     async handleSubmit(event) {
         if (event !== undefined) event.preventDefault();
+        if (this.state.content === "") return; //Dont send when there is no content
         this.setState({ writeError: null });
 
         const chatArea = this.myRef.current || null;
         try {
             this.state.selectedValues.map(async (val) => {
-                await db.ref("chats/" + val).push({
-                    receiver: val,
-                    content: this.state.content,
-                    timestamp: Date.now(),
-                    uid: this.state.user.uid,
-                });
+                await db
+                    .ref("chats/" + val.replace(new RegExp(/(\s\((.*)\))/), ""))
+                    .push({
+                        receiver: val.replace(new RegExp(/(\s\((.*)\))/), ""),
+                        content: this.state.content,
+                        timestamp: Date.now(),
+                        uid: this.state.user.uid,
+                    });
             });
             this.setState({ content: "" });
             if (chatArea != null) {
@@ -128,6 +144,19 @@ export default class Chat extends Component {
             this.setState({ writeError: error.message });
         }
     }
+    async handlePerson() {
+        const person = this.state.persons[
+            Math.round(Math.random() * (this.state.persons.length - 1))
+        ];
+        const content = `Ein besorgter Badegast kommt zu dir: Gesucht wird ${
+            person.firstname
+        } ${person.lastname}, ${age(person.birthday)} Jahre alt, ${
+            person.height
+        } cm groß und trägt ein${randomClothing()} in der Farbe ${
+            person.color
+        }. Gib diese Suchmeldung an den Adler Bietigheim weiter!`;
+        this.setState({ content });
+    }
 
     handleCalc() {
         const content =
@@ -135,13 +164,21 @@ export default class Chat extends Component {
             this.state.station.data.Ort +
             ": " +
             randomTerm();
-        this.setState({ content: content });
+        this.setState({ content });
     }
 
     async handleDelete() {
         this.state.selectedValues.forEach(async (val) => {
-            await db.ref("chats/" + val).set(null);
+            await db
+                .ref("chats/" + val.replace(new RegExp(/(\s\((.*)\))/), ""))
+                .set(null);
         });
+    }
+
+    handleAlarm() {
+        const content =
+            "Alarm! Du entdeckst eine Person südlich der Badeinsel. Die Person droht unterzugehen! Dein Kamerad ist ins Wasser gegangen! Melde die Lage umgehend an den Adler Bietigheim!";
+        this.setState({ content });
     }
 
     redirect = () => {
@@ -204,15 +241,27 @@ export default class Chat extends Component {
                                 {this.state.chats.slice(-2).map((chat) => {
                                     //Last 2 messages
                                     if (chat.content === "") return "";
+                                    const newMessage =
+                                        Date.now() - chat.timestamp < 3000;
+                                    const alarm = chat.content.includes(
+                                        "Alarm!"
+                                    );
                                     return (
                                         <p
                                             key={chat.timestamp}
                                             className={
                                                 "chat-bubble " +
-                                                (this.state.user.uid ===
-                                                chat.uid
-                                                    ? "current-user"
-                                                    : "")
+                                                (newMessage ? "new " : "") +
+                                                (alarm ? "alarm" : "")
+                                            }
+                                            onClick={
+                                                newMessage
+                                                    ? (event) => {
+                                                          event.target.classList.remove(
+                                                              "new"
+                                                          );
+                                                      }
+                                                    : () => {}
                                             }
                                         >
                                             {chat.content}
@@ -244,6 +293,9 @@ export default class Chat extends Component {
                                                         }
                                                     >
                                                         {station.Bezeichnung}
+                                                        {station.name !== ""
+                                                            ? ` (${station.name})`
+                                                            : ""}
                                                     </option>
                                                 );
                                             }
@@ -256,6 +308,19 @@ export default class Chat extends Component {
                                 >
                                     Rechenaufgabe
                                 </button>
+                                <button
+                                    className="btn btn-warning px-5 mb-2"
+                                    onClick={this.handlePerson}
+                                >
+                                    Personensuche
+                                </button>
+                                <button
+                                    className="btn btn-warning px-5 mb-2"
+                                    onClick={this.handleAlarm}
+                                >
+                                    Alarm
+                                </button>
+                                <br />
                                 <button
                                     className="btn btn-danger px-5 mb-2"
                                     onClick={this.handleDelete}
