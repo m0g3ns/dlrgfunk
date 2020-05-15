@@ -12,6 +12,7 @@ import Login from "./pages/Login";
 import Teacher from "./pages/Teacher";
 import NotFound from "./pages/NotFound";
 import Join from "./pages/Join";
+import City from "./pages/City";
 
 import { auth } from "./services/firebase";
 import "./styles.css";
@@ -103,6 +104,11 @@ class App extends Component {
                         path="/dlrgfunk/join"
                         authenticated={this.state.authenticated}
                         component={Join}
+                    />
+                    <PrivateRoute
+                        path="/dlrgfunk/city"
+                        authenticated={this.state.authenticated}
+                        component={City}
                     />
                     <PrivateRoute
                         path="/dlrgfunk/chat"

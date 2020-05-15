@@ -43,7 +43,9 @@ export default class Chat extends Component {
     async componentDidMount() {
         this.setState({ readError: null, loadingChats: true });
         let redirect = true;
-        let stationsRef = firestore.collection("stations");
+        let stationsRef = firestore.collection(
+            `cities/${this.props.location.state.city.id}/stations`
+        );
         await stationsRef
             .where("uid", "==", this.state.user.uid) //Check ob es Station mit uid gibt
             .get()
@@ -88,21 +90,23 @@ export default class Chat extends Component {
         const chatArea = this.myRef.current;
         if (this.state.station.data.Bezeichnung !== "") {
             try {
-                db.ref("chats/" + this.state.station.data.Bezeichnung).on(
-                    "value",
-                    (snapshot) => {
-                        let chats = [];
-                        snapshot.forEach((snap) => {
-                            chats.push(snap.val());
-                        });
-                        chats.sort(function (a, b) {
-                            return a.timestamp - b.timestamp;
-                        });
-                        this.setState({ chats });
-                        chatArea.scrollBy(0, chatArea.scrollHeight);
-                        this.setState({ loadingChats: false });
-                    }
-                );
+                db.ref(
+                    "chats/" +
+                        this.props.location.state.city.data.name +
+                        "/" +
+                        this.state.station.data.Bezeichnung
+                ).on("value", (snapshot) => {
+                    let chats = [];
+                    snapshot.forEach((snap) => {
+                        chats.push(snap.val());
+                    });
+                    chats.sort(function (a, b) {
+                        return a.timestamp - b.timestamp;
+                    });
+                    this.setState({ chats });
+                    chatArea.scrollBy(0, chatArea.scrollHeight);
+                    this.setState({ loadingChats: false });
+                });
             } catch (error) {
                 this.setState({
                     readError: error.message,
@@ -129,7 +133,12 @@ export default class Chat extends Component {
         try {
             this.state.selectedValues.map(async (val) => {
                 await db
-                    .ref("chats/" + val.replace(new RegExp(/(\s\((.*)\))/), ""))
+                    .ref(
+                        "chats/" +
+                            this.props.location.state.city.data.name +
+                            "/" +
+                            val.replace(new RegExp(/(\s\((.*)\))/), "")
+                    )
                     .push({
                         receiver: val.replace(new RegExp(/(\s\((.*)\))/), ""),
                         content: this.state.content,
@@ -171,7 +180,12 @@ export default class Chat extends Component {
     async handleDelete() {
         this.state.selectedValues.forEach(async (val) => {
             await db
-                .ref("chats/" + val.replace(new RegExp(/(\s\((.*)\))/), ""))
+                .ref(
+                    "chats/" +
+                        this.props.location.state.city.data.name +
+                        "/" +
+                        val.replace(new RegExp(/(\s\((.*)\))/), "")
+                )
                 .set(null);
         });
     }

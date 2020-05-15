@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Header from "../components/Header";
 import Funkteilnehmer from "../components/Funkteilnehmer";
+import { Redirect } from "react-router-dom";
 import { auth } from "../services/firebase";
 import { firestore } from "../services/firebase";
 
@@ -9,6 +10,7 @@ export default class Join extends Component {
         super(props);
         this.state = {
             user: auth().currentUser,
+            city: this.getCity(),
             stations: [],
             readError: null,
             writeError: null,
@@ -19,11 +21,17 @@ export default class Join extends Component {
         this.myRef = React.createRef();
     }
 
+    getCity() {
+        if (this.props.location.state !== undefined)
+            return this.props.location.state.city;
+        return null;
+    }
+
     async componentDidMount() {
         this.setState({ readError: null, loadingStations: true });
         try {
             firestore
-                .collection("stations")
+                .collection(`cities/${this.state.city.id}/stations`)
                 .get()
                 .then((snapshot) => {
                     let stations = [];
@@ -64,12 +72,23 @@ export default class Join extends Component {
 
     render() {
         const stations = this.state.stations.map((station) => {
-            return <Funkteilnehmer key={station.id} station={station} />;
+            return (
+                <Funkteilnehmer
+                    key={station.id}
+                    city={this.state.city}
+                    station={station}
+                />
+            );
         });
         return (
             <div>
                 <Header />
                 <div className="join">
+                    {this.state.city === null ? (
+                        <Redirect to="/dlrgfunk/city" />
+                    ) : (
+                        console.log(this.state.city)
+                    )}
                     {this.state.loadingStations ? (
                         <div
                             className="spinner-border text-success"

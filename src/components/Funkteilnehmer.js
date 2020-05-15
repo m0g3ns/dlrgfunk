@@ -35,7 +35,10 @@ export default class Funkteilnehmer extends React.Component {
             <Redirect
                 to={{
                     pathname: "/dlrgfunk/chat",
-                    state: { station: this.state.station },
+                    state: {
+                        station: this.state.station,
+                        city: this.props.city,
+                    },
                 }}
             />
         );
@@ -48,10 +51,10 @@ export default class Funkteilnehmer extends React.Component {
         ) {
             //JOIN ACTION
             let cancelled = false;
-            let stationsRef = firestore.collection("stations");
-            let stationRef = firestore
-                .collection("stations")
-                .doc(this.state.station.id);
+            let stationsRef = firestore.collection(
+                `cities/${this.props.city.id}/stations`
+            );
+            let stationRef = stationsRef.doc(this.state.station.id);
 
             await stationsRef
                 .where("uid", "==", this.state.user.uid)
@@ -96,7 +99,7 @@ export default class Funkteilnehmer extends React.Component {
         } else if (this.state.user.uid === this.state.station.data.uid) {
             //DELETE ACTION
             let stationRef = firestore
-                .collection("stations")
+                .collection(`cities/${this.props.city.id}/stations`)
                 .doc(this.state.station.id);
 
             await stationRef
