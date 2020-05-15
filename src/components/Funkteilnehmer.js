@@ -46,6 +46,7 @@ export default class Funkteilnehmer extends React.Component {
             this.state.username !== "" &&
             this.state.user.uid !== this.state.station.data.uid
         ) {
+            //JOIN ACTION
             let cancelled = false;
             let stationsRef = firestore.collection("stations");
             let stationRef = firestore
@@ -67,6 +68,13 @@ export default class Funkteilnehmer extends React.Component {
 
             if (cancelled) return;
 
+            if (this.state.station.data.Bezeichnung === "") {
+                const name = prompt("Admin Passwort");
+                if (name !== "1234") {
+                    return;
+                }
+            }
+
             await stationRef
                 .update({
                     uid: this.state.user.uid,
@@ -82,9 +90,11 @@ export default class Funkteilnehmer extends React.Component {
         } else if (
             this.state.user.uid === this.state.station.data.uid &&
             [...e.currentTarget.classList].includes("joinBtn")
+            //REJOIN ACTION
         ) {
             this.setState({ redirect: true });
         } else if (this.state.user.uid === this.state.station.data.uid) {
+            //DELETE ACTION
             let stationRef = firestore
                 .collection("stations")
                 .doc(this.state.station.id);

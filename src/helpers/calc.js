@@ -25,3 +25,16 @@ export function age(birthday) {
     const ageDate = new Date(ageDifMs);
     return Math.abs(ageDate.getUTCFullYear() - 1970);
 }
+
+const messages = [
+    "Restdruck auf Sauerstoffflasche beträgt 20 bar",
+    "2 WG e-klar",
+    "Auf unserem Turmrucksack fehlen 2 Kühlpacks und ein Verbandpäckchen groß",
+    "Wir haben eine Wassertemperatur von 18°C gemessen",
+    "Vor Turm 4 befindet sich ein Motorboot innerhalb der Badezone",
+    'Ein Badegast meldet eine gestürzte Person auf der Promenade in Höhe der Bar "Wir haben nichts"',
+];
+
+export function getMessage() {
+    return messages[Math.round(Math.random() * (messages.length - 1))];
+}

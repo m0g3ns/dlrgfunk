@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Header from "../components/Header";
 import { auth, db, firestore } from "../services/firebase";
 import { Redirect } from "react-router-dom";
-import { randomTerm, randomClothing, age } from "../helpers/calc";
+import { randomTerm, randomClothing, age, getMessage } from "../helpers/calc";
 
 export default class Chat extends Component {
     constructor(props) {
@@ -24,6 +24,7 @@ export default class Chat extends Component {
         this.handleCalc = this.handleCalc.bind(this);
         this.handlePerson = this.handlePerson.bind(this);
         this.handleAlarm = this.handleAlarm.bind(this);
+        this.handleBridge = this.handleBridge.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -175,6 +176,37 @@ export default class Chat extends Component {
         });
     }
 
+    handleBridge() {
+        if (this.state.selectedValues.length !== 1) {
+            alert("Nur eine Station auswählen!");
+            return;
+        }
+        const seatedStations = this.state.otherStations.filter(
+            (station) =>
+                station.name !== "" &&
+                this.state.selectedValues[0].replace(
+                    new RegExp(/(\s\((.*)\))/),
+                    ""
+                ) !== station.Bezeichnung
+        );
+        if (seatedStations.length === 0) {
+            alert("Es muss einen Überträger geben!");
+            return;
+        }
+        const station =
+            seatedStations[
+                Math.round(Math.random() * (seatedStations.length - 1))
+            ];
+        const content =
+            "Du hast mehrfach versucht den Adler Bietigheim anzufunken, jedoch bist du außer Reichweite. Glücklicherweise bist du in Reichweite von " +
+            station.Bezeichnung +
+            ". Mache eine Funkbrücke über " +
+            station.Bezeichnung +
+            " und übermittle folgende Nachricht an den Adler Bietigheim: " +
+            getMessage();
+        this.setState({ content });
+    }
+
     handleAlarm() {
         const content =
             "Alarm! Du entdeckst eine Person südlich der Badeinsel. Die Person droht unterzugehen! Dein Kamerad ist ins Wasser gegangen! Melde die Lage umgehend an den Adler Bietigheim!";
@@ -302,24 +334,33 @@ export default class Chat extends Component {
                                         )}
                                     </select>
                                 </div>
-                                <button
-                                    className="btn btn-warning px-5 mb-2"
-                                    onClick={this.handleCalc}
-                                >
-                                    Rechenaufgabe
-                                </button>
-                                <button
-                                    className="btn btn-warning px-5 mb-2"
-                                    onClick={this.handlePerson}
-                                >
-                                    Personensuche
-                                </button>
-                                <button
-                                    className="btn btn-warning px-5 mb-2"
-                                    onClick={this.handleAlarm}
-                                >
-                                    Alarm
-                                </button>
+                                <div className="buttonColumn">
+                                    <button
+                                        className="btn btn-warning px-5 mb-2"
+                                        onClick={this.handleCalc}
+                                    >
+                                        Rechenaufgabe
+                                    </button>
+                                    <button
+                                        className="btn btn-warning px-5 mb-2"
+                                        onClick={this.handlePerson}
+                                    >
+                                        Personensuche
+                                    </button>
+                                    <button
+                                        className="btn btn-warning px-5 mb-2"
+                                        onClick={this.handleBridge}
+                                    >
+                                        Funkbrücke
+                                    </button>
+
+                                    <button
+                                        className="btn btn-warning px-5 mb-2"
+                                        onClick={this.handleAlarm}
+                                    >
+                                        Alarm
+                                    </button>
+                                </div>
                                 <br />
                                 <button
                                     className="btn btn-danger px-5 mb-2"

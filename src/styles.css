@@ -20,7 +20,7 @@ body {
     background-color: rgb(187, 222, 251);
     padding: 20px;
     border-radius: 4px;
-    max-width: 300px;
+    max-width: 400px;
     word-wrap: break-word;
 }
 
@@ -159,6 +159,10 @@ body {
     animation-iteration-count: infinite;
 }
 
+.buttonColumn button {
+    width: 80%;
+}
+
 @media screen and (max-width: 767px) {
     .funkteilnehmer {
         margin-top: 60px;
@@ -179,7 +183,7 @@ body {
     }
 
     .chat-area .chat-bubble {
-        max-width: 250px;
+        max-width: 300px;
     }
 }
 
