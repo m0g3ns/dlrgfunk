@@ -168,97 +168,110 @@ export default class Chat extends Component {
         return (
             <div>
                 <Header />
-                {this.state.redirect ? this.redirect() : ""}
-                <h3 style={{ margin: "70px 0 10px 10px" }}>
-                    Du bist&nbsp;
-                    {this.state.station.data.Rufname +
-                        " " +
-                        this.state.station.data.Ort +
-                        " " +
-                        this.state.station.data.Bezeichnung}
-                </h3>
-                {this.state.station.data.Bezeichnung !== "" ? (
-                    <div className="chat-area" ref={this.myRef}>
-                        {this.state.loadingChats ? (
-                            <div
-                                className="spinner-border text-success"
-                                role="status"
-                            >
-                                <span className="sr-only">Loading...</span>
-                            </div>
-                        ) : (
-                            ""
-                        )}
-                        {this.state.chats.map((chat) => {
-                            return (
-                                <p
-                                    key={chat.timestamp}
-                                    className={
-                                        "chat-bubble " +
-                                        (this.state.user.uid === chat.uid
-                                            ? "current-user"
-                                            : "")
-                                    }
-                                >
-                                    {chat.content}
-                                    <br />
-                                    <span className="chat-time float-right">
-                                        {this.formatTime(chat.timestamp)}
-                                    </span>
-                                </p>
-                            );
-                        })}
-                    </div>
-                ) : (
-                    <form onSubmit={this.handleSubmit} className="mx-3">
-                        <div className="form-group">
-                            <select
-                                multiple
-                                className="form-control"
-                                onChange={this.change}
-                            >
-                                {this.state.otherStations.map((station) => {
+                <div className="wrapper">
+                    <div className="content">
+                        {this.state.redirect ? this.redirect() : ""}
+                        <h3>
+                            Du bist&nbsp;
+                            {this.state.station.data.Rufname +
+                                " " +
+                                this.state.station.data.Ort +
+                                " " +
+                                this.state.station.data.Bezeichnung}
+                        </h3>
+                        {this.state.station.data.Bezeichnung !== "" ? (
+                            <div className="chat-area" ref={this.myRef}>
+                                {this.state.loadingChats ? (
+                                    <div
+                                        className="spinner-border text-success"
+                                        role="status"
+                                    >
+                                        <span className="sr-only">
+                                            Loading...
+                                        </span>
+                                    </div>
+                                ) : (
+                                    ""
+                                )}
+                                {this.state.chats.slice(-2).map((chat) => {
                                     return (
-                                        <option
-                                            key={
-                                                station.Ort +
-                                                station.Bezeichnung
+                                        <p
+                                            key={chat.timestamp}
+                                            className={
+                                                "chat-bubble " +
+                                                (this.state.user.uid ===
+                                                chat.uid
+                                                    ? "current-user"
+                                                    : "")
                                             }
                                         >
-                                            {station.Bezeichnung}
-                                        </option>
+                                            {chat.content}
+                                            <br />
+                                            <span className="chat-time float-right">
+                                                {this.formatTime(
+                                                    chat.timestamp
+                                                )}
+                                            </span>
+                                        </p>
                                     );
                                 })}
-                            </select>
+                            </div>
+                        ) : (
+                            <form onSubmit={this.handleSubmit} className="mx-3">
+                                <div className="form-group">
+                                    <select
+                                        multiple
+                                        className="form-control"
+                                        onChange={this.change}
+                                    >
+                                        {this.state.otherStations.map(
+                                            (station) => {
+                                                return (
+                                                    <option
+                                                        key={
+                                                            station.Ort +
+                                                            station.Bezeichnung
+                                                        }
+                                                    >
+                                                        {station.Bezeichnung}
+                                                    </option>
+                                                );
+                                            }
+                                        )}
+                                    </select>
+                                </div>
+                                <button
+                                    className="btn btn-warning px-5 mb-4"
+                                    onClick={this.handleCalc}
+                                >
+                                    Rechenaufgabe
+                                </button>
+                                <textarea
+                                    className="form-control"
+                                    name="content"
+                                    onChange={this.handleChange}
+                                    value={this.state.content}
+                                ></textarea>
+                                {this.state.writeError ? (
+                                    <p className="text-danger">
+                                        {this.state.writeError}
+                                    </p>
+                                ) : null}
+                                <button
+                                    type="submit"
+                                    className="btn btn-submit px-5 mt-4"
+                                >
+                                    Absenden
+                                </button>
+                            </form>
+                        )}
+                        <div className="py-5 mx-3 info">
+                            Eingeloggt als:{" "}
+                            <strong className="text-info">
+                                {this.state.user.uid}
+                            </strong>
                         </div>
-                        <button
-                            className="btn btn-warning px-5 mb-4"
-                            onClick={this.handleCalc}
-                        >
-                            Rechenaufgabe
-                        </button>
-                        <textarea
-                            className="form-control"
-                            name="content"
-                            onChange={this.handleChange}
-                            value={this.state.content}
-                        ></textarea>
-                        {this.state.writeError ? (
-                            <p className="text-danger">
-                                {this.state.writeError}
-                            </p>
-                        ) : null}
-                        <button
-                            type="submit"
-                            className="btn btn-submit px-5 mt-4"
-                        >
-                            Absenden
-                        </button>
-                    </form>
-                )}
-                <div className="py-5 mx-3">
-                    Eingeloggt als:{" "}
-                    <strong className="text-info">{this.state.user.uid}</strong>
+                    </div>
                 </div>
             </div>
         );
