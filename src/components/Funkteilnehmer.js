@@ -47,7 +47,8 @@ export default class Funkteilnehmer extends React.Component {
     async linkClicked(e) {
         if (
             this.state.username !== "" &&
-            this.state.user.uid !== this.state.station.data.uid
+            this.state.user.uid !== this.state.station.data.uid &&
+            this.state.station.data.uid === ""
         ) {
             //JOIN ACTION
             let cancelled = false;
@@ -165,6 +166,12 @@ export default class Funkteilnehmer extends React.Component {
                             : "btn btn-danger delete"
                     }
                     onClick={this.linkClicked}
+                    disabled={
+                        this.state.station.data.uid !== "" &&
+                        this.state.station.data.uid !== this.state.user.uid
+                            ? "disabled"
+                            : ""
+                    }
                 >
                     {this.state.station.data.uid !== this.state.user.uid ? (
                         "Beitreten"

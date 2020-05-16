@@ -45,7 +45,7 @@ function PublicRoute({ component: Component, authenticated, ...rest }) {
                 authenticated === false ? (
                     <Component {...props} />
                 ) : (
-                    <Redirect to="/dlrgfunk/join" />
+                    <Redirect to="/dlrgfunk/city" />
                 )
             }
         />

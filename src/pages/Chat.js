@@ -14,11 +14,15 @@ export default class Chat extends Component {
             content: "",
             readError: null,
             writeError: null,
+            successMessage: "",
+            errorMessage: "",
             loadingChats: false,
             redirect: false,
             otherStations: [],
             selectedValues: [],
             persons: [],
+            docId: "",
+            wantingMore: false,
         };
         this.change = this.change.bind(this);
         this.handleCalc = this.handleCalc.bind(this);
@@ -28,6 +32,7 @@ export default class Chat extends Component {
         this.handleDelete = this.handleDelete.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleWantingMore = this.handleWantingMore.bind(this);
         this.myRef = React.createRef();
     }
 
@@ -52,6 +57,7 @@ export default class Chat extends Component {
             .then((snaps) => {
                 snaps.forEach((snap) => {
                     redirect = false;
+                    this.setState({ docId: snap.id });
                 });
             })
             .catch((err) => {
@@ -61,6 +67,7 @@ export default class Chat extends Component {
         this.setState({ redirect });
         if (redirect) return; //keine weiteren Daten abrufen
         if (this.state.station.data.Bezeichnung === "") {
+            //Lehrgangsleitung
             await stationsRef
                 .where("Bezeichnung", ">", "")
                 .get()
@@ -76,6 +83,18 @@ export default class Chat extends Component {
                     });
                     this.setState({ otherStations: stations });
                 });
+            stationsRef.where("Bezeichnung", ">", "").onSnapshot((snaps) => {
+                const stations = [];
+                snaps.forEach((snap) => {
+                    stations.push(snap.data());
+                });
+                stations.sort(function (a, b) {
+                    if (a.Bezeichnung < b.Bezeichnung) return -1;
+                    if (a.Bezeichnung >= b.Bezeichnung) return 1;
+                    return 0;
+                });
+                this.setState({ otherStations: stations });
+            });
             await firestore
                 .collection("persons")
                 .get()
@@ -144,6 +163,13 @@ export default class Chat extends Component {
                         content: this.state.content,
                         timestamp: Date.now(),
                         uid: this.state.user.uid,
+                    })
+                    .then(() => {
+                        const successMessage =
+                            "Die Nachricht an " +
+                            val.replace(new RegExp(/(\s\((.*)\))/), "") +
+                            " wurde erfolgreich gesendet!";
+                        this.setState({ successMessage });
                     });
             });
             this.setState({ content: "" });
@@ -155,9 +181,30 @@ export default class Chat extends Component {
         }
     }
     async handlePerson() {
+        if (this.state.persons.length === 1) {
+            await firestore
+                .collection("persons")
+                .get()
+                .then((snaps) => {
+                    const persons = [];
+                    snaps.forEach((snap) => {
+                        persons.push(snap.data());
+                    });
+                    this.setState({ persons });
+                });
+        }
         const person = this.state.persons[
             Math.round(Math.random() * (this.state.persons.length - 1))
         ];
+        const index = this.state.persons.indexOf(person);
+        if (index !== -1)
+            this.setState({
+                persons: [
+                    ...this.state.persons.filter(
+                        (el) => el.lastname !== person.lastname
+                    ),
+                ],
+            });
         const content = `Ein besorgter Badegast kommt zu dir: Gesucht wird ${
             person.firstname
         } ${person.lastname}, ${age(person.birthday)} Jahre alt, ${
@@ -186,13 +233,20 @@ export default class Chat extends Component {
                         "/" +
                         val.replace(new RegExp(/(\s\((.*)\))/), "")
                 )
-                .set(null);
+                .set(null)
+                .then(() => {
+                    const successMessage =
+                        "Die Nachrichten von " +
+                        val.replace(new RegExp(/(\s\((.*)\))/), "") +
+                        " wurden erfolgreich gelöscht!";
+                    this.setState({ successMessage });
+                });
         });
     }
 
     handleBridge() {
         if (this.state.selectedValues.length !== 1) {
-            alert("Nur eine Station auswählen!");
+            this.setState({ errorMessage: "Nur eine Station auswählen!" });
             return;
         }
         const seatedStations = this.state.otherStations.filter(
@@ -204,7 +258,10 @@ export default class Chat extends Component {
                 ) !== station.Bezeichnung
         );
         if (seatedStations.length === 0) {
-            alert("Es muss einen Überträger geben!");
+            this.setState({
+                errorMessage:
+                    "Es muss einen Überträger / 2 besetzte Stationen geben!",
+            });
             return;
         }
         const station =
@@ -225,6 +282,25 @@ export default class Chat extends Component {
         const content =
             "Alarm! Du entdeckst eine Person südlich der Badeinsel. Die Person droht unterzugehen! Dein Kamerad ist ins Wasser gegangen! Melde die Lage umgehend an den Adler Bietigheim!";
         this.setState({ content });
+    }
+
+    async handleWantingMore() {
+        let stationsRef = firestore.collection(
+            `cities/${this.props.location.state.city.id}/stations`
+        );
+        await stationsRef.doc(this.state.docId).update({
+            wantingMore: true,
+        });
+        this.setState({ wantingMore: true });
+        setTimeout(
+            function () {
+                stationsRef.doc(this.state.docId).update({
+                    wantingMore: false,
+                });
+                this.setState({ wantingMore: false });
+            }.bind(this),
+            10000
+        );
     }
 
     redirect = () => {
@@ -320,10 +396,20 @@ export default class Chat extends Component {
                                         </p>
                                     );
                                 })}
+                                {!this.state.wantingMore ? (
+                                    <button
+                                        className="btn btn-success"
+                                        onClick={this.handleWantingMore}
+                                    >
+                                        Ich würde gerne eine Aufgabe bekommen!
+                                    </button>
+                                ) : (
+                                    ""
+                                )}
                             </div>
                         ) : (
                             <form onSubmit={this.handleSubmit} className="mx-3">
-                                <div className="form-group">
+                                <div className="form-group select">
                                     <select
                                         multiple
                                         className="form-control"
@@ -336,6 +422,11 @@ export default class Chat extends Component {
                                                         key={
                                                             station.Ort +
                                                             station.Bezeichnung
+                                                        }
+                                                        className={
+                                                            station.wantingMore
+                                                                ? "wantingMore"
+                                                                : ""
                                                         }
                                                     >
                                                         {station.Bezeichnung}
@@ -401,10 +492,39 @@ export default class Chat extends Component {
                                 </button>
                             </form>
                         )}
+                        {this.state.successMessage !== "" ? (
+                            <div className="alert alert-success">
+                                (
+                                {setTimeout(
+                                    function () {
+                                        this.setState({ successMessage: "" });
+                                    }.bind(this),
+                                    5000
+                                )}
+                                )&nbsp;
+                                {this.state.successMessage}
+                            </div>
+                        ) : (
+                            ""
+                        )}
+                        {this.state.errorMessage !== "" ? (
+                            <div className="alert alert-danger">
+                                (
+                                {setTimeout(
+                                    function () {
+                                        this.setState({ errorMessage: "" });
+                                    }.bind(this),
+                                    5000
+                                )}
+                                )&nbsp;{this.state.errorMessage}
+                            </div>
+                        ) : (
+                            ""
+                        )}
                         <div className="py-5 mx-3 info">
                             Eingeloggt als:{" "}
                             <strong className="text-info">
-                                {this.state.user.uid}
+                                {this.state.user.email}
                             </strong>
                         </div>
                     </div>

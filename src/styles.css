@@ -38,6 +38,10 @@ body {
     width: 40%;
 }
 
+.form-control.addBtn {
+    width: 100%;
+}
+
 .form-control:focus {
     box-shadow: none;
 }
@@ -165,6 +169,28 @@ body {
 
 .cityJoinBtn {
     max-width: 200px;
+}
+
+.disabled {
+    cursor: default;
+}
+
+.alert {
+    max-width: 350px;
+    margin-left: 15px;
+    margin-top: 15px;
+}
+
+.form-group.select {
+    width: 80%;
+}
+
+option.wantingMore {
+    background-color: rgba(227, 6, 19, 0.4);
+}
+
+.input-group.city {
+    margin-left: 20px;
 }
 
 @media screen and (max-width: 767px) {

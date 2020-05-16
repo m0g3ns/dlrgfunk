@@ -24,7 +24,7 @@ export default class Cities extends React.Component {
 
     render() {
         return (
-            <div className="input-group">
+            <div className="input-group city">
                 {this.state.redirect ? this.redirect() : ""}
                 <div className="input-group-prepend">
                     <div className="input-group-text">
