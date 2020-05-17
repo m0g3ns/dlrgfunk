@@ -83,18 +83,20 @@ export default class Chat extends Component {
                     });
                     this.setState({ otherStations: stations });
                 });
-            stationsRef.where("Bezeichnung", ">", "").onSnapshot((snaps) => {
-                const stations = [];
-                snaps.forEach((snap) => {
-                    stations.push(snap.data());
+            this.listener = stationsRef
+                .where("Bezeichnung", ">", "")
+                .onSnapshot((snaps) => {
+                    const stations = [];
+                    snaps.forEach((snap) => {
+                        stations.push(snap.data());
+                    });
+                    stations.sort(function (a, b) {
+                        if (a.Bezeichnung < b.Bezeichnung) return -1;
+                        if (a.Bezeichnung >= b.Bezeichnung) return 1;
+                        return 0;
+                    });
+                    this.setState({ otherStations: stations });
                 });
-                stations.sort(function (a, b) {
-                    if (a.Bezeichnung < b.Bezeichnung) return -1;
-                    if (a.Bezeichnung >= b.Bezeichnung) return 1;
-                    return 0;
-                });
-                this.setState({ otherStations: stations });
-            });
             await firestore
                 .collection("persons")
                 .get()
@@ -109,23 +111,25 @@ export default class Chat extends Component {
         const chatArea = this.myRef.current;
         if (this.state.station.data.Bezeichnung !== "") {
             try {
-                db.ref(
-                    "chats/" +
-                        this.props.location.state.city.data.name +
-                        "/" +
-                        this.state.station.data.Bezeichnung
-                ).on("value", (snapshot) => {
-                    let chats = [];
-                    snapshot.forEach((snap) => {
-                        chats.push(snap.val());
+                this.chatListener = db
+                    .ref(
+                        "chats/" +
+                            this.props.location.state.city.data.name +
+                            "/" +
+                            this.state.station.data.Bezeichnung
+                    )
+                    .on("value", (snapshot) => {
+                        let chats = [];
+                        snapshot.forEach((snap) => {
+                            chats.push(snap.val());
+                        });
+                        chats.sort(function (a, b) {
+                            return a.timestamp - b.timestamp;
+                        });
+                        this.setState({ chats });
+                        chatArea.scrollBy(0, chatArea.scrollHeight);
+                        this.setState({ loadingChats: false });
                     });
-                    chats.sort(function (a, b) {
-                        return a.timestamp - b.timestamp;
-                    });
-                    this.setState({ chats });
-                    chatArea.scrollBy(0, chatArea.scrollHeight);
-                    this.setState({ loadingChats: false });
-                });
             } catch (error) {
                 this.setState({
                     readError: error.message,
@@ -134,6 +138,20 @@ export default class Chat extends Component {
             }
         } else {
             this.setState({ loadingChats: false });
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof this.listener === "function") {
+            this.listener();
+        }
+        if (this.state.station.data.Bezeichnung !== "") {
+            db.ref(
+                "chats/" +
+                    this.props.location.state.city.data.name +
+                    "/" +
+                    this.state.station.data.Bezeichnung
+            ).off();
         }
     }
 
@@ -396,6 +414,7 @@ export default class Chat extends Component {
                                         </p>
                                     );
                                 })}
+                                <br />
                                 {!this.state.wantingMore ? (
                                     <button
                                         className="btn btn-success"

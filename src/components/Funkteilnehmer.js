@@ -11,10 +11,9 @@ export default class Funkteilnehmer extends React.Component {
 
         this.state = {
             user: auth().currentUser,
-            username: this.props.station.data.name,
+            username: "",
             errorWrite: "",
             redirect: false,
-            station: this.props.station,
         };
 
         this.updateInput = this.updateInput.bind(this);
@@ -36,7 +35,7 @@ export default class Funkteilnehmer extends React.Component {
                 to={{
                     pathname: "/dlrgfunk/chat",
                     state: {
-                        station: this.state.station,
+                        station: this.props.station,
                         city: this.props.city,
                     },
                 }}
@@ -47,15 +46,15 @@ export default class Funkteilnehmer extends React.Component {
     async linkClicked(e) {
         if (
             this.state.username !== "" &&
-            this.state.user.uid !== this.state.station.data.uid &&
-            this.state.station.data.uid === ""
+            this.state.user.uid !== this.props.station.data.uid &&
+            this.props.station.data.uid === ""
         ) {
             //JOIN ACTION
             let cancelled = false;
             let stationsRef = firestore.collection(
                 `cities/${this.props.city.id}/stations`
             );
-            let stationRef = stationsRef.doc(this.state.station.id);
+            let stationRef = stationsRef.doc(this.props.station.id);
 
             await stationsRef
                 .where("uid", "==", this.state.user.uid)
@@ -72,7 +71,15 @@ export default class Funkteilnehmer extends React.Component {
 
             if (cancelled) return;
 
-            if (this.state.station.data.Bezeichnung === "") {
+            await stationRef.get().then((val) => {
+                //Checken ob Station schon besetzt
+                const data = val.data();
+                if (data.uid !== "" || data.name !== "") cancelled = true;
+            });
+
+            if (cancelled) return;
+
+            if (this.props.station.data.Bezeichnung === "") {
                 const name = prompt("Admin Passwort");
                 if (name !== "1234") {
                     return;
@@ -92,16 +99,16 @@ export default class Funkteilnehmer extends React.Component {
                     e.preventDefault();
                 });
         } else if (
-            this.state.user.uid === this.state.station.data.uid &&
+            this.state.user.uid === this.props.station.data.uid &&
             [...e.currentTarget.classList].includes("joinBtn")
             //REJOIN ACTION
         ) {
             this.setState({ redirect: true });
-        } else if (this.state.user.uid === this.state.station.data.uid) {
+        } else if (this.state.user.uid === this.props.station.data.uid) {
             //DELETE ACTION
             let stationRef = firestore
                 .collection(`cities/${this.props.city.id}/stations`)
-                .doc(this.state.station.id);
+                .doc(this.props.station.id);
 
             await stationRef
                 .update({
@@ -109,17 +116,9 @@ export default class Funkteilnehmer extends React.Component {
                     name: "",
                 })
                 .then((res) => {
-                    this.setState((prevState) => ({
-                        station: {
-                            ...prevState.station,
-                            data: {
-                                ...prevState.station.data,
-                                uid: "",
-                                name: "",
-                            },
-                        },
+                    this.setState({
                         username: "",
-                    }));
+                    });
                 })
                 .catch((err) => {
                     this.setState({ errorWrite: err });
@@ -127,8 +126,6 @@ export default class Funkteilnehmer extends React.Component {
                 });
         }
     }
-
-    async deleteOldSession(e) {}
 
     render() {
         if (this.state.errorWrite !== "") {
@@ -140,11 +137,11 @@ export default class Funkteilnehmer extends React.Component {
             <div className="funkteilnehmer">
                 {this.state.redirect ? this.redirect() : ""}
                 <span>
-                    {this.state.station.data.Rufname +
+                    {this.props.station.data.Rufname +
                         " " +
-                        this.state.station.data.Ort +
+                        this.props.station.data.Ort +
                         " " +
-                        this.state.station.data.Bezeichnung}
+                        this.props.station.data.Bezeichnung}
                 </span>
                 <input
                     className="funk-name form-control"
@@ -152,34 +149,38 @@ export default class Funkteilnehmer extends React.Component {
                     name="username"
                     placeholder="Name"
                     onChange={this.updateInput}
-                    value={this.state.username}
+                    value={
+                        this.props.station.data.uid !== ""
+                            ? this.props.station.data.name
+                            : this.state.username
+                    }
                     disabled={
-                        this.state.station.data.uid !== "" ? "disabled" : ""
+                        this.props.station.data.uid !== "" ? "disabled" : ""
                     }
                 />
                 <button
                     className={
-                        this.state.station.data.uid !== this.state.user.uid
-                            ? this.state.station.data.uid !== ""
+                        this.props.station.data.uid !== this.state.user.uid
+                            ? this.props.station.data.uid !== ""
                                 ? "btn btn-primary px-5 ml-3 disabled"
                                 : "btn btn-primary px-5 ml-3"
                             : "btn btn-danger delete"
                     }
                     onClick={this.linkClicked}
                     disabled={
-                        this.state.station.data.uid !== "" &&
-                        this.state.station.data.uid !== this.state.user.uid
+                        this.props.station.data.uid !== "" &&
+                        this.props.station.data.uid !== this.state.user.uid
                             ? "disabled"
                             : ""
                     }
                 >
-                    {this.state.station.data.uid !== this.state.user.uid ? (
+                    {this.props.station.data.uid !== this.state.user.uid ? (
                         "Beitreten"
                     ) : (
                         <img src={trash} alt="trash" />
                     )}
                 </button>
-                {this.state.station.data.uid === this.state.user.uid ? (
+                {this.props.station.data.uid === this.state.user.uid ? (
                     <button
                         className="btn btn-success joinBtn"
                         onClick={this.linkClicked}

@@ -39,7 +39,7 @@ export default class Join extends Component {
     async componentDidMount() {
         this.setState({ readError: null, loadingStations: true });
         try {
-            firestore
+            await firestore
                 .collection(`cities/${this.state.city.id}/stations`)
                 .get()
                 .then((snapshot) => {
@@ -59,8 +59,33 @@ export default class Join extends Component {
                     this.setState({ stations });
                     this.setState({ loadingStations: false });
                 });
+            this.listener = firestore
+                .collection(`cities/${this.state.city.id}/stations`)
+                .where("Bezeichnung", ">=", "")
+                .onSnapshot((snaps) => {
+                    const newStations = [];
+                    snaps.forEach((snap) => {
+                        newStations.push({
+                            id: snap.id,
+                            data: snap.data(),
+                            input: "",
+                        });
+                    });
+                    newStations.sort(function (a, b) {
+                        if (a.Bezeichnung < b.Bezeichnung) return -1;
+                        if (a.Bezeichnung >= b.Bezeichnung) return 1;
+                        return 0;
+                    });
+                    this.setState({ stations: newStations });
+                });
         } catch (error) {
             this.setState({ readError: error.message, loadingChats: false });
+        }
+    }
+
+    componentWillUnmount() {
+        if (typeof this.listener === "function") {
+            this.listener();
         }
     }
 
@@ -110,15 +135,6 @@ export default class Join extends Component {
     }
 
     render() {
-        const stations = this.state.stations.map((station) => {
-            return (
-                <Funkteilnehmer
-                    key={station.id}
-                    city={this.state.city}
-                    station={station}
-                />
-            );
-        });
         return (
             <div>
                 <Header />
@@ -136,10 +152,18 @@ export default class Join extends Component {
                             <span className="sr-only">Loading...</span>
                         </div>
                     ) : (
-                        stations
+                        this.state.stations.map((station) => {
+                            return (
+                                <Funkteilnehmer
+                                    key={station.id}
+                                    city={this.state.city}
+                                    station={station}
+                                />
+                            );
+                        })
                     )}
                     {this.state.user.uid === "6GD9eEtrrLZfwThwQtPEFKtQLqA3" ? (
-                        <form onSubmit={this.handleSubmit}>
+                        <form onSubmit={this.handleSubmit} className="addForm">
                             <div className="form-group">
                                 <label>
                                     Rufname

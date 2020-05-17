@@ -189,8 +189,18 @@ option.wantingMore {
     background-color: rgba(227, 6, 19, 0.4);
 }
 
+.input-group.city .input-group-prepend .input-group-text {
+    width: 120px;
+}
+
 .input-group.city {
     margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+.addForm {
+    margin-left: 10px;
+    margin-top: 10px;
 }
 
 @media screen and (max-width: 767px) {
@@ -214,6 +224,10 @@ option.wantingMore {
 
     .chat-area .chat-bubble {
         max-width: 300px;
+    }
+
+    .addForm {
+        margin-top: 50px;
     }
 }
 
