@@ -61,11 +61,19 @@ export default class Chat extends Component {
                 });
             })
             .catch((err) => {
-                redirect = false;
+                redirect = true;
                 console.error(err);
             });
         this.setState({ redirect });
         if (redirect) return; //keine weiteren Daten abrufen
+        this.stationUpdateListener = stationsRef
+            .doc(this.state.station.id)
+            .onSnapshot((snap) => {
+                const data = snap.data();
+                if (data.uid !== this.state.user.uid) {
+                    this.setState({ redirect: true }); //kick User
+                }
+            });
         if (this.state.station.data.Bezeichnung === "") {
             //Lehrgangsleitung
             await stationsRef
@@ -108,28 +116,27 @@ export default class Chat extends Component {
                     this.setState({ persons });
                 });
         }
+
         const chatArea = this.myRef.current;
         if (this.state.station.data.Bezeichnung !== "") {
             try {
-                this.chatListener = db
-                    .ref(
-                        "chats/" +
-                            this.props.location.state.city.data.name +
-                            "/" +
-                            this.state.station.data.Bezeichnung
-                    )
-                    .on("value", (snapshot) => {
-                        let chats = [];
-                        snapshot.forEach((snap) => {
-                            chats.push(snap.val());
-                        });
-                        chats.sort(function (a, b) {
-                            return a.timestamp - b.timestamp;
-                        });
-                        this.setState({ chats });
-                        chatArea.scrollBy(0, chatArea.scrollHeight);
-                        this.setState({ loadingChats: false });
+                db.ref(
+                    "chats/" +
+                        this.props.location.state.city.data.name +
+                        "/" +
+                        this.state.station.data.Bezeichnung
+                ).on("value", (snapshot) => {
+                    let chats = [];
+                    snapshot.forEach((snap) => {
+                        chats.push(snap.val());
                     });
+                    chats.sort(function (a, b) {
+                        return a.timestamp - b.timestamp;
+                    });
+                    this.setState({ chats });
+                    chatArea.scrollBy(0, chatArea.scrollHeight);
+                    this.setState({ loadingChats: false });
+                });
             } catch (error) {
                 this.setState({
                     readError: error.message,
@@ -144,6 +151,9 @@ export default class Chat extends Component {
     componentWillUnmount() {
         if (typeof this.listener === "function") {
             this.listener();
+        }
+        if (typeof this.stationUpdateListener === "function") {
+            this.stationUpdateListener();
         }
         if (this.state.station.data.Bezeichnung !== "") {
             db.ref(

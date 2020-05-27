@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { signup, signInWithGoogle, signInWithGitHub } from "../helpers/auth";
+import {
+    signup,
+    signInWithGoogle,
+    signInWithGitHub,
+    signInAnonymous,
+} from "../helpers/auth";
+import Header from "../components/Header";
 
 export default class SignUp extends Component {
     constructor() {
@@ -44,7 +50,14 @@ export default class SignUp extends Component {
         try {
             await signInWithGitHub();
         } catch (error) {
-            console.log(error);
+            this.setState({ error: error.message });
+        }
+    }
+
+    async anonSignIn() {
+        try {
+            await signInAnonymous();
+        } catch (error) {
             this.setState({ error: error.message });
         }
     }
@@ -52,6 +65,7 @@ export default class SignUp extends Component {
     render() {
         return (
             <div className="container">
+                <Header></Header>
                 <form className="mt-5 py-5 px-5" onSubmit={this.handleSubmit}>
                     <h1>
                         Registrieren im
@@ -64,7 +78,7 @@ export default class SignUp extends Component {
                     </p>
                     <div className="form-group">
                         <input
-                            className="form-control"
+                            className="form-control signupmail"
                             placeholder="Email"
                             name="email"
                             type="email"
@@ -72,9 +86,9 @@ export default class SignUp extends Component {
                             value={this.state.email}
                         ></input>
                     </div>
-                    <div className="form-group">
+                    <div className="form-group signupmail">
                         <input
-                            className="form-control"
+                            className="form-control signupmail"
                             placeholder="Password"
                             name="password"
                             onChange={this.handleChange}
@@ -86,26 +100,37 @@ export default class SignUp extends Component {
                         {this.state.error ? (
                             <p className="text-danger">{this.state.error}</p>
                         ) : null}
-                        <button className="btn btn-primary px-5" type="submit">
+                        <button
+                            className="btn btn-primary px-5 signupbtn"
+                            type="submit"
+                        >
                             Registrieren
                         </button>
                     </div>
                     <p>
-                        Du kannst dich auch mit folgenden Anbietern registrieren
+                        Du kannst dich auch mit folgenden Anbietern
+                        registrieren:
                     </p>
                     <button
-                        className="btn btn-danger mr-2"
+                        className="btn btn-danger mr-2 signupbtn"
                         type="button"
                         onClick={this.googleSignIn}
                     >
                         Registrieren mit Google
                     </button>
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-secondary mr-2 signupbtn"
                         type="button"
                         onClick={this.githubSignIn}
                     >
                         Registrieren mit GitHub
+                    </button>
+                    <button
+                        className="btn btn-dark loginbtn"
+                        type="button"
+                        onClick={this.anonSignIn}
+                    >
+                        Anonym Anmelden
                     </button>
                     <hr></hr>
                     <p>

@@ -36,6 +36,17 @@ export default class Join extends Component {
         return null;
     }
 
+    getAdmin() {
+        this.state.stations.forEach((station) => {
+            if (
+                station.uid === this.state.user.uid &&
+                station.Bezeichnung === ""
+            )
+                return true;
+        });
+        return false;
+    }
+
     async componentDidMount() {
         this.setState({ readError: null, loadingStations: true });
         try {

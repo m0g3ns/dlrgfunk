@@ -12,6 +12,11 @@ body {
     margin-top: 70px;
 }
 
+.cities {
+    margin: 80px auto;
+    max-width: 50%;
+}
+
 .chat-area {
     padding: 20px;
 }
@@ -203,6 +208,17 @@ option.wantingMore {
     margin-top: 10px;
 }
 
+.spinner-center {
+    width: 5rem;
+    height: 5rem;
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -2.5rem;
+    margin-left: -2.5rem;
+}
+
 @media screen and (max-width: 767px) {
     .funkteilnehmer {
         margin-top: 60px;
@@ -228,6 +244,22 @@ option.wantingMore {
 
     .addForm {
         margin-top: 50px;
+    }
+
+    .loginmail {
+        width: 100%;
+    }
+
+    .loginbtn {
+        width: 100%;
+    }
+
+    .signupmail {
+        width: 100%;
+    }
+
+    .signupbtn {
+        width: 100%;
     }
 }
 

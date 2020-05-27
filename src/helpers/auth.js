@@ -18,6 +18,10 @@ export function signInWithGitHub() {
     return auth().signInWithPopup(provider);
 }
 
+export function signInAnonymous() {
+    return auth().signInAnonymously();
+}
+
 export function logout() {
     return auth().signOut();
 }

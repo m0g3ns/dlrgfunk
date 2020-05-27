@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import { signin, signInWithGoogle, signInWithGitHub } from "../helpers/auth";
+import Header from "../components/Header";
+import {
+    signin,
+    signInWithGoogle,
+    signInWithGitHub,
+    signInAnonymous,
+} from "../helpers/auth";
 
 export default class Login extends Component {
     constructor() {
@@ -48,9 +54,18 @@ export default class Login extends Component {
         }
     }
 
+    async anonSignIn() {
+        try {
+            await signInAnonymous();
+        } catch (error) {
+            this.setState({ error: error.message });
+        }
+    }
+
     render() {
         return (
             <div className="container">
+                <Header></Header>
                 <form
                     className="mt-5 py-5 px-5"
                     autoComplete="off"
@@ -63,11 +78,11 @@ export default class Login extends Component {
                         </Link>
                     </h1>
                     <p className="lead">
-                        Fülle die Felder unten aus um dich einzuloggen.
+                        Fülle die Felder unten aus, um dich einzuloggen.
                     </p>
                     <div className="form-group">
                         <input
-                            className="form-control"
+                            className="form-control loginmail"
                             placeholder="Email"
                             name="email"
                             type="email"
@@ -77,7 +92,7 @@ export default class Login extends Component {
                     </div>
                     <div className="form-group">
                         <input
-                            className="form-control"
+                            className="form-control loginmail"
                             placeholder="Passwort"
                             name="password"
                             onChange={this.handleChange}
@@ -89,24 +104,34 @@ export default class Login extends Component {
                         {this.state.error ? (
                             <p className="text-danger">{this.state.error}</p>
                         ) : null}
-                        <button className="btn btn-primary px-5" type="submit">
+                        <button
+                            className="btn btn-primary px-5 loginbtn"
+                            type="submit"
+                        >
                             Anmelden
                         </button>
                     </div>
-                    <p>Du kannst dich auch mit folgenden Anbietern anmelden</p>
+                    <p>Du kannst dich auch mit folgenden Anbietern anmelden:</p>
                     <button
-                        className="btn btn-danger mr-2"
+                        className="btn btn-danger mr-2 loginbtn"
                         type="button"
                         onClick={this.googleSignIn}
                     >
                         Anmelden mit Google
                     </button>
                     <button
-                        className="btn btn-secondary"
+                        className="btn btn-secondary mr-2 loginbtn"
                         type="button"
                         onClick={this.githubSignIn}
                     >
                         Anmelden mit GitHub
+                    </button>
+                    <button
+                        className="btn btn-dark loginbtn"
+                        type="button"
+                        onClick={this.anonSignIn}
+                    >
+                        Anonym Anmelden
                     </button>
                     <hr />
                     <p>

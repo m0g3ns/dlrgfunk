@@ -15,8 +15,8 @@ export default class Home extends Component {
                                 Willkommen zu DLRG Online Funkübungen
                             </h1>
                             <p className="lead">
-                                Ein tolles Programm um Erfahrung im Funken
-                                außerhalb des Wachdiensts zu sammeln.
+                                Ein Programm um Erfahrung im Funken außerhalb
+                                des Wachdiensts zu sammeln.
                             </p>
                             {!this.props.authenticated ? (
                                 <div className="mt-4">

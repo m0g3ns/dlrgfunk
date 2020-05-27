@@ -47,7 +47,7 @@ export default class Join extends Component {
         return (
             <div>
                 <Header />
-                <div className="join">
+                <div className="cities">
                     {this.state.loadingCities ? (
                         <div
                             className="spinner-border text-success"
