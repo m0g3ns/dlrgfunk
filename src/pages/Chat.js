@@ -553,7 +553,7 @@ export default class Chat extends Component {
                         <div className="py-5 mx-3 info">
                             Eingeloggt als:{" "}
                             <strong className="text-info">
-                                {this.state.user.email}
+                                {this.state.user.email || "Anonymer Benutzer"}
                             </strong>
                         </div>
                     </div>
