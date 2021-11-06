@@ -21,6 +21,7 @@ export default class Join extends Component {
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.removeAllParticipants = this.removeAllParticipants.bind(this);
         this.myRef = React.createRef();
     }
 
@@ -145,6 +146,25 @@ export default class Join extends Component {
         }
     }
 
+    async removeAllParticipants(e) {
+        const password = prompt("Admin Passwort");
+        if(password !== "1234") return;
+        this.state.stations.map(async (station) => {
+            let stationRef = firestore
+                .collection(`cities/${this.state.city.id}/stations`)
+                .doc(station.id);
+            await stationRef
+                .update({
+                    uid: "",
+                    name: "",
+                })
+                .catch((err) => {
+                    this.setState({ errorWrite: err });
+                    e.preventDefault();
+                });
+        })
+    }
+
     render() {
         return (
             <div>
@@ -220,6 +240,12 @@ export default class Join extends Component {
                     ) : (
                         ""
                     )}
+                    <button 
+                        onClick={this.removeAllParticipants}
+                        className="btn btn-danger"
+                    >
+                        Alle Teilnehmer entfernen
+                    </button>
                 </div>
             </div>
         );
